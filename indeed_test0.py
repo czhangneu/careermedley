@@ -26,6 +26,14 @@ for key, value in search_response.iteritems():
     if key == "results":
         res = value
 
-print res
+#print res
+jobkeys = []
+for i in range(len(res)):
+    #print res[i]
+    for key, value in res[i].iteritems():
+        if key == "jobkey":
+            jobkeys.append(value)
 
+for i in range(len(jobkeys)):
+    print jobkeys[i]
 
