@@ -11,6 +11,7 @@ Base   = declarative_base()
 class Positions(Base):
     __tablename__ = 'positions'
     id = Column(Integer, primary_key=True)
+
     job_id    = Column(String(50), unique=True)
     job_title = Column(String(100))
     job_link  = Column(String(500))

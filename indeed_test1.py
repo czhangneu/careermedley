@@ -5,12 +5,13 @@ def main():
     # publisher=5950869068484812
     client = IndeedClient('5950869068484812')
 
-    params = generate_advanced_query("python", "Boston", 10, 0, 25)
+    params = generate_advanced_query("python", "Boston", 1, 0, 25)
     search_response = client.search(**params)
     #print search_response
 
-    #filename = 'indeed_positions_json.txt'
-    # write_json_to_file(filename, search_response)
+    filename = 'indeed_positions_json.txt'
+    write_json_to_file(filename, search_response)
+
 
     (positions, total) = extract_query_result(search_response)
     print total
@@ -20,7 +21,14 @@ def main():
         extract_position_info(position, jobkeys)
 
     for i in range(len(jobkeys)):
-        print jobkeys[i]
+        print "(%d: %s)" % (i, jobkeys[i])
+
+    print '*' * 100
+    job_response = client.jobs(jobkeys = "ad752ce9ae3f1b5e")
+    #print job_response['results']
+    print job_response
+    #filename = 'indeed_positions_json.txt'
+    #write_json_to_file(filename, job_response)
 
 
 # *****************************************************************************
