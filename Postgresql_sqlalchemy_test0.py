@@ -1,6 +1,6 @@
 from sqlalchemy import *
 #engine = create_engine('postgresql://scott:tiger@localhost:5432/mydatabase')
-db = create_engine('postgresql+psycopg2://postgres:postgres@localhost:5432/dvdsales')  # to be change
+db = create_engine('postgresql+psycopg2://postgres:Peace12@localhost:5432/dvdsales')  # to be change
 metadata = MetaData(db)
 # The users table already exists, so no need to redefine it. Just
 # load it from the database using the "autoload" feature.
