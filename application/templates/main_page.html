@@ -1,0 +1,78 @@
+
+
+{% extends "base.html" %}
+
+ <!-- Change the title -->
+{% block title %}{{ title }} {% endblock %}
+
+{% block navbar %}
+    <div class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header navbar-right">
+                <a class="navbar-brand" href="{{ url_for('main_page') }}">Home</a>
+                {% if current_user.is_authenticated() %}
+                    <a class="navbar-brand" href="{{ url_for('logout') }}">Sign Out</a>
+                {% else %}
+                    <a class="navbar-brand" href="{{ url_for('login') }}">Sign In</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+<!-- Modify bootstrap's body content with ours -->
+{% block top %}
+    {{super()}}
+        <div class="center">
+            <header id="logo">
+                <img src="/static/images/careerMedley.png" >
+            </header>
+        </div>
+
+        <div class="center">
+            <form class="form-horizontal" method="POST" name="main_page">
+                {{ form.hidden_tag() }}
+                <div class="form-group">
+                    {{ form.job(class="form-control", id="job search", placeholder="Job Title, Keywords") }}
+                    {% for error in form.errors.job %}
+                        <span style="color: red;">[{{error}}]</span>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group">
+                    {{ form.location(class="form-control", id="location", placeholder="Location") }}
+                    {% for error in form.errors.location %}
+                        <span style="color: red;">[{{error}}]</span>
+                    {% endfor %}
+                </div>
+                <div class="form-group">
+                    {{ form.search(class="btn btn-primary") }}
+                </div>
+
+            </form>
+        </div>
+        {% if jobs %}
+            {% for job in jobs %}
+                <div class="job_results">
+                    <a> {{job.jobtitle }}</a>
+                    <div class="company_details">
+                        <span>{{job.company}}  - </span>
+                        <span>{{job.city}}, {{job.state}}</span>
+                    </div>
+                    <table class="table">
+                        <tbody>
+                            <tr class="active">
+                                <td>
+                                    <span>{{job.snippet|safe}}</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p> NO jobs displayed!!!</p>
+        {% endif %}
+{% endblock %}
+
+

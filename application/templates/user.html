@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+ <!-- Change the title -->
+{% block title %}{{ title }} {% endblock %}
+
+{% block navbar %}
+    <div class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header navbar-right">
+                <a class="navbar-brand" href="/">Home</a>
+                 <a class="navbar-brand" href="{{ url_for('logout') }}">Sign Out</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+<!-- Modify bootstrap's body content with ours -->
+{% block top %}
+
+        <div class="center">
+            <header id="logo">
+                <img src="/static/images/careerMedley.png" >
+            </header>
+        </div>
+        {% block profile %}
+            <div class="navbar navbar-inverse" role="navigation">
+                <div class="container-fluid">
+                    <div class="navbar-header">
+                        <a class="navbar-brand" href="/">Profile</a>
+                        <a class="navbar-brand" href="{{ url_for('logout') }}">Documents</a>
+                        <a class="navbar-brand" href="/">Applications</a>
+                        <a class="navbar-brand" href="/">Saved Positions</a>
+                        <a class="navbar-brand" href="/">Employers</a>
+                    </div>
+                </div>
+            </div>
+        {% endblock %}
+        <div class="center">
+            <h1>Hi, {{user.nickname}}!</h1>
+        </div>
+{% endblock %}

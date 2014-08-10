@@ -1,0 +1,19 @@
+
+
+{% extends "bootstrap/base.html" %}
+
+<!-- Add our css to the head block -->
+{% block css_base %}
+    {{super()}}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+{% endblock %}
+
+ <!-- Change the title -->
+{% block title %}{{ title }} {% endblock %}
+
+{% block navbar %}
+    <div class="navbar navbar-default" role="navigation">
+    </div>
+{% endblock %}
+
+

@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+ <!-- Change the title -->
+{% block title %}{{ title }} {% endblock %}
+
+{% block navbar %}
+    <div class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header navbar-right">
+                <a class="navbar-brand" href="/">Home</a>
+                    <a class="navbar-brand" href="{{ url_for('login') }}">Sign In</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+<!-- Modify bootstrap's body content with ours -->
+{% block top %}
+    <script type="text/javascript">
+        function set_openid(openid, id) {
+            u = openid.search('<username>');
+            if (u != -1) {
+                // openid requires username
+                user = prompt('Enter your ' + pr + ' username:');
+                openid = openid.substr(0, u) + user;
+            }
+            form = document.forms['login'];
+            form.elements['openid'].value = openid;
+        }
+    </script>
+    <div>
+        <header>
+            <img src="/static/images/careerMedley.png" class="left-side" >
+        </header>
+    </div>
+
+    <div class="center">
+            <form action="" method="post" name="login">
+                {{form.hidden_tag()}}
+                Please enter your OpenID, or select one of the providers below:<br>
+                <div class="form-group">
+                    {{form.openid(size=80, class="form-control", placeholder="OpenID")}}
+                </div>
+                |{% for pr in providers %}
+                    <a href="javascript:set_openid('{{pr.url}}', '{{pr.name}}');">{{pr.name}}</a> |
+                {% endfor %}
+                {% for error in form.errors.openid %}
+                    <span style="color: red;">[{{error}}]</span>
+                {% endfor %}<br>
+                <div class="checkbox">
+                    {{form.remember_me.label}}
+                    {{form.remember_me}}
+                </div>
+                <button type="submit" class="btn btn-primary">Login</button>
+            </form>
+    </div>
+{% endblock %}
+
