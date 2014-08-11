@@ -15,14 +15,15 @@
 <div class="navbar navbar-inverse" role="navigation">
         <form class="navbar-form pull-right">
             <div class="form-group">
-                <input type="text" class="span2" id="username" placeholder="Username">
+                {{ form.username(class="span2", id="username", placeholder="Username") }}
             </div>
             <div class="form-group">
-                <input type="text" class="span2" id="password" placeholder="Password">
+                {{ form.password(class="span2", id="password", placeholder="Password") }}
             </div>
-            <button type="submit" class="btn-inverse">Submit</button>
+            {{ form.submit(class="btn-inverse") }}
         </form>
 </div>
+
 {% endblock %}
 <!-- Modify bootstrap's body content with ours -->
 {% block top %}

@@ -6,7 +6,7 @@
 {% block title %}{{ title }} {% endblock %}
 
 {% block navbar %}
-    <div class="navbar navbar-default" role="navigation">
+    <div class="navbar navbar-inverse" role="navigation">
         <div class="container-fluid">
             <div class="navbar-header navbar-right">
                 <a class="navbar-brand" href="{{ url_for('main_page') }}">Home</a>
@@ -53,25 +53,8 @@
         </div>
         {% if jobs %}
             {% for job in jobs %}
-                <div class="job_results">
-                    <a> {{job.jobtitle }}</a>
-                    <div class="company_details">
-                        <span>{{job.company}}  - </span>
-                        <span>{{job.city}}, {{job.state}}</span>
-                    </div>
-                    <table class="table">
-                        <tbody>
-                            <tr class="active">
-                                <td>
-                                    <span>{{job.snippet|safe}}</span>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+                {% include 'job_search_results.html' %}
             {% endfor %}
-        {% else %}
-            <p> NO jobs displayed!!!</p>
         {% endif %}
 {% endblock %}
 

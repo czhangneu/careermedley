@@ -1,10 +1,24 @@
-<!DOCTYPE html>
-<html>
-<head lang="en">
-    <meta charset="UTF-8">
-    <title></title>
-</head>
-<body>
-
-</body>
-</html>
+<div class="job_results">
+    <a> {{job.jobtitle }}</a>
+    <div class="company_details">
+        <span>{{job.company}}  - </span>
+        <span>{{job.city}}, {{job.state}}</span>
+    </div>
+    <table class="table">
+        <tbody>
+            <tr class="active">
+                <td>
+                    <span>{{job.snippet|safe}}</span>
+                </td>
+                {% if current_user.is_authenticated() %}
+                    <td>
+                        <button type="button" class="btn btn-primary" onclick="get_data()">Save</button>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-success" onclick="get_data()">Apply</button>
+                    </td>
+                {% endif %}
+            </tr>
+        </tbody>
+    </table>
+</div>

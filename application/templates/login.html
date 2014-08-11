@@ -4,14 +4,14 @@
 {% block title %}{{ title }} {% endblock %}
 
 {% block navbar %}
-    <div class="navbar navbar-default" role="navigation">
+    <nav class="navbar navbar-inverse" role="navigation">
         <div class="container-fluid">
             <div class="navbar-header navbar-right">
                 <a class="navbar-brand" href="/">Home</a>
-                    <a class="navbar-brand" href="{{ url_for('login') }}">Sign In</a>
+                <a class="navbar-brand" href="{{ url_for('login') }}">Sign In</a>
             </div>
         </div>
-    </div>
+    </nav>
 {% endblock %}
 
 <!-- Modify bootstrap's body content with ours -->
@@ -28,9 +28,9 @@
             form.elements['openid'].value = openid;
         }
     </script>
-    <div>
-        <header>
-            <img src="/static/images/careerMedley.png" class="left-side" >
+    <div class="center">
+        <header id="logo">
+            <img src="/static/images/careerMedley.png" >
         </header>
     </div>
 
@@ -41,8 +41,10 @@
                 <div class="form-group">
                     {{form.openid(size=80, class="form-control", placeholder="OpenID")}}
                 </div>
-                |{% for pr in providers %}
-                    <a href="javascript:set_openid('{{pr.url}}', '{{pr.name}}');">{{pr.name}}</a> |
+                {% for pr in providers %}
+                    <a href="javascript:set_openid('{{pr.url}}', '{{pr.name}}');">
+                        <img src="/static/images/{{pr.name.lower()}}.png"
+                             class="img-polaroid" id="open_id" /></a>
                 {% endfor %}
                 {% for error in form.errors.openid %}
                     <span style="color: red;">[{{error}}]</span>

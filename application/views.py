@@ -112,10 +112,22 @@ def logout():
 # def user_logged_in(nickname):
 #     return render_template('user.html')
 
-@app.route('/user/<nickname>')
+@app.route('/user/<nickname>', methods=['GET', 'POST'])
 @login_required
 def user(nickname):
     user = g.user
+    form = JobSearchForm()
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            getJobs = ProcessJobSearch()
+            jobs = getJobs.job_search(form.job.data, form.location.data)
+            for i in range(len(jobs)):
+                print "range (%d: %s)" % (i, jobs[i])
+                print '*' * 100
+            return render_template('user.html',
+                                   title='CareerMedley',
+                                   form=form, user=user, jobs=jobs)
     return render_template('user.html',
                            title=nickname,
+                           form=form,
                            user=user)
