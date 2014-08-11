@@ -10,6 +10,19 @@
     display: block;
     width: 20%;
 }
+#open_id {
+    margin:2px;
+}
+#user_color {
+    color: Yellow;
+    font-size: 150%;
+}
+.image {
+    max-width: 100%;
+    width: 100%;
+}
+
 #logo {
     padding: 2em 0 2em;
 }
+
