@@ -32,6 +32,7 @@ def main():
     exec line
     config_file.close()
 
+
     Session = sessionmaker()
     Session.configure(bind=engine)
     #Base.metadata.create_all(engine)

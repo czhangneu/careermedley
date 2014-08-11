@@ -1,11 +1,13 @@
 import json
 from indeed import IndeedClient
+from indeedapi import IndeedApi
 
 def main():
     # publisher=5950869068484812
     client = IndeedClient('5950869068484812')
 
-    params = generate_advanced_query("python", "Boston", 1, 0, 25)
+    numPositionPerPage = 25
+    params = generate_advanced_query("google", "Boston", 1, 0, numPositionPerPage)
     search_response = client.search(**params)
     #print search_response
 
@@ -15,6 +17,7 @@ def main():
 
     (positions, total) = extract_query_result(search_response)
     print total
+    print "number of pages: ", obtain_number_of_pages(total, numPositionPerPage)
 
     jobkeys = []
     for position in positions:
@@ -24,11 +27,24 @@ def main():
         print "(%d: %s)" % (i, jobkeys[i])
 
     print '*' * 100
-    job_response = client.jobs(jobkeys = "ad752ce9ae3f1b5e")
-    #print job_response['results']
-    print job_response
+
+    job_response = client.jobs(jobkeys = ("fab9f8e3cc8ba41c"))
+    #print job_response[u'results']
+    #print job_response
     #filename = 'indeed_positions_json.txt'
     #write_json_to_file(filename, job_response)
+
+    # token = "5950869068484812"
+    # api = IndeedApi(token)
+    # job_details = api.job_details(["fab9f8e3cc8ba41c"])
+    #print job_details
+    # for key, value in job_details.iteritems():
+    #     #print key, value
+    #     if key == u'results':
+    result = search_by_jobkeys(["fab9f8e3cc8ba41c"])
+    #print result[0]
+    for key, value in result[0].iteritems():
+        print "%s: %s" % (key, value)
 
 
 # *****************************************************************************
@@ -85,7 +101,25 @@ def extract_position_info(position, jobkeys):
         if key == "jobkey":
             jobkeys.append(value)
 # *****************************************************************************
+#
+# calculate how many pages there
+# totresult / (num of positions per page)
+def obtain_number_of_pages(totalResults, numPositionPerPage):
+    numPages = (totalResults / numPositionPerPage + 1)
+    return numPages
 
+# *****************************************************************************
+def search_by_jobkeys(jobkeys):
+    token = "5950869068484812"
+    api = IndeedApi(token)
+    job_details = api.job_details(jobkeys)
+    #print job_details
+    result = None
+    for key, value in job_details.iteritems():
+        #print key, value
+        if key == u'results':
+            result = value
+    return result
 
 if __name__ == "__main__":
     main()
