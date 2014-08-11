@@ -7,13 +7,12 @@
     {{super()}}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 {% endblock %}
+{% block js_base %}
+    {{super()}}
+    <script src="{{ url_for('static', filename='js/actions.js') }}"></script>
+{% endblock %}
 
  <!-- Change the title -->
 {% block title %}{{ title }} {% endblock %}
-
-{% block navbar %}
-    <div class="navbar navbar-default" role="navigation">
-    </div>
-{% endblock %}
 
 
