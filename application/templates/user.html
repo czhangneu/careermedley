@@ -84,8 +84,17 @@
                     {% if jobs %}
                         {% for job in jobs %}
                             {% include 'job_search_results.html' %}
-                            <script type="text/javascript">
-                                jQuery.("job_results").data("job", job);
+                            <script type=text/javascript>
+                                var obj = {
+                                    jobkey: "{{job.jobkey}}",
+                                    jobtitle: "{{job.jobtitle}}",
+                                    company: "{{job.company}}",
+                                    city: "{{job.city}}",
+                                    state: "{{job.state}}",
+                                    snippet: "{{job.snippet}}"
+                                }
+                                var name = ".jresults_" + obj.jobkey;
+                                set_data(".job_results", obj);
                             </script>
                         {% endfor %}
                     {% endif %}

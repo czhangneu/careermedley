@@ -96,10 +96,10 @@ class ProcessJobSearch():
         for key, value in position.iteritems():
             #print "%s: %s" % (key, value)
             if key == 'jobkey':
-                jobkeys.append({'jobtitle': position['jobtitle'],
+                jobkeys.append({'jobkey'  : position['jobkey'],
+                                'jobtitle': position['jobtitle'],
                                 'company' : position['company'],
                                 'city'    : position['city'],
                                 'state'   : position['state'],
-                                'country' : position['country'],
                                 'snippet': position['snippet']})
 # *****************************************************************************

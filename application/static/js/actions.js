@@ -9,10 +9,26 @@
         form.elements['openid'].value = openid;
 }*/
 
-function set_data(obj,tag) {
-    $(tag).data("job", obj);
+function change_class(old_tag, new_tag) {
+    $(old_tag).attr('class', new_tag);
+}
+function set_data(tag, data) {
+    console.log(" ==== tag: " + tag + " data: " + data.jobkey);
+    $(tag).attr('id', data.jobkey);
+    console.log(" now id name is: " + $(tag).attr('id'));
+    $(tag).data(data);
+    console.log(" saved data: " + JSON.stringify($(tag).data()) );
 }
 
-function get_data(tag) {
-    $(tag).data("job");
-}
+$(document).ready(function() {
+    $("button").click(function(event) {
+        //alert(event.target.id);
+        var id = $(this).closest("div").attr("id");
+        console.log(" class is: " + jkey + " data: " + JSON.stringify($('#' + id).data()) );
+    });
+});
+/*$(".jkey").click(function(){
+    alert('clicked!');
+    var jkey = $("button").closest("div").attr("class");
+});*/
+

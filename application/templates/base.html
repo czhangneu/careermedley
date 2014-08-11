@@ -3,12 +3,13 @@
 {% extends "bootstrap/base.html" %}
 
 <!-- Add our css to the head block -->
-{% block css_base %}
+{% block css %}
     {{super()}}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 {% endblock %}
-{% block js_base %}
+{% block js_top %}
     {{super()}}
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="{{ url_for('static', filename='js/actions.js') }}"></script>
 {% endblock %}
 
