@@ -14,7 +14,13 @@ class LoginForm(Form):
     openid = StringField('openid', validators = [InputRequired()])
     remember_me = BooleanField('Remember me', default = False)
 
-# class LoginForm(Form):
-#     username = StringField('Username', [InputRequired()])
-#     password = PasswordField('Password', [InputRequired()])
-#     submit = SubmitField('Log In')
+class ProfileForm(Form):
+     firstname = StringField('FirstName', [InputRequired()])
+     lastname = StringField('LastName', [InputRequired()])
+     city = StringField('City', [InputRequired()])
+     state = StringField('State', [InputRequired()])
+     country = StringField('Country', [InputRequired()])
+     zipcode = StringField('Zipcode', [InputRequired()])
+     major = StringField('Major', [InputRequired()])
+     degree = StringField('Degree', [InputRequired()])
+     submit = SubmitField('Submit')

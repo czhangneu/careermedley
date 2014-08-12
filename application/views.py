@@ -3,10 +3,11 @@ __author__ = 'onyekaigabari'
 
 from flask import render_template, flash, redirect, g, url_for, request, session
 from application import app, lm, db, oid
-from forms import LoginForm, JobSearchForm
+from forms import LoginForm, JobSearchForm, ProfileForm
 from job_search import ProcessJobSearch
 from models import User, ROLE_USER, ROLE_ADMIN
 from flask_login import login_user, logout_user, login_required, current_user
+import json
 
 
 @lm.user_loader
@@ -82,36 +83,6 @@ def logout():
     logout_user()
     return redirect(url_for('login'))
 
-
-# def login():
-# print "method got: %s" % request.method
-#     if g.user is not None and g.user.is_authenticated():
-#         return redirect(url_for('user'))
-#     form = LoginForm()
-#     print " request args, form submitted: %s" % ( form.password.data)
-#     if form.validate_on_submit():
-#         print "======validating submission username: %s, password: %s, request: %s" % \
-#               (form.username.data, form.password.data, request)
-#         user = User.query.filter_by(username = form.username.data).first()
-#         if user is not None and user.password == form.password.data:
-#             login_user(user)
-#             return redirect(request.args.get('next') or url_for('user'))
-#         else:
-#             flash("username and/or password is invalid")
-#             return redirect(url_for('login'))
-#
-#         # At this point, the user logged in successfully
-#     print " I got HERE, form isn't valid"
-#     #print "==== error username: %s, password: %s, request: %s " % (request.args['username'], request.args['password'], request)
-#     form.username.data = form.password.data = ''
-#     return render_template('login.html', title='Sign In', form=form)
-
-# Handles when user is logged in
-# @app.route('/user/<nickname>')
-# @login_required
-# def user_logged_in(nickname):
-#     return render_template('user.html')
-
 @app.route('/user/<nickname>', methods=['GET', 'POST'])
 @login_required
 def user(nickname):
@@ -128,6 +99,27 @@ def user(nickname):
                                    title='CareerMedley',
                                    form=form, user=user, jobs=jobs)
     return render_template('user.html',
+                           title=nickname,
+                           form=form,
+                           user=user)
+
+@app.route('/user/<nickname>/profile', methods=['GET', 'POST'])
+@login_required
+def profile(nickname):
+    user = g.user
+    form = ProfileForm()
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            firstname = form.firstname.data
+            lastname = form.lastname.data
+            city = form.city.data
+            state = form.state.data
+            country = form.country.data
+            zipcode = form.zipcode.data
+            major = form.major.data
+            degree = form.degree.data
+
+    return render_template('profile.html',
                            title=nickname,
                            form=form,
                            user=user)
