@@ -1,18 +1,21 @@
 __author__ = 'onyeka'
 import json
-from indeed import IndeedClient
+#from indeed import IndeedClientx
+from indeedapi import *
 
 class ProcessJobSearch():
     def __init__(self):
         print "ProcessJobSearch initialized"
 
     def job_search(self, job, location):
-        # publisher=5950869068484812
-        client = IndeedClient('5950869068484812')
+        publisher=5950869068484812
+        #client = IndeedClient('5950869068484812')
+        api = IndeedApi(publisher)
 
         #params = generate_advanced_query("python", "Boston", 1, 0, 25)
-        params = self.generate_advanced_query(job, location, 1, 0, 25)
-        search_response = client.search(**params)
+        #params = self.generate_advanced_query(job, location, 1, 0, 25)
+        #search_response = client.search(**params)
+        search_response = api.search_withParams(job, location, 1, 0, 25)
         print "Search Response: %s" % search_response
 
         filename = 'indeed_positions_json.txt'
