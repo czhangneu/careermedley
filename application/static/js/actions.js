@@ -13,18 +13,54 @@ function change_class(old_tag, new_tag) {
     $(old_tag).attr('class', new_tag);
 }
 function set_data(tag, data) {
-    console.log(" ==== tag: " + tag + " data: " + data.jobkey);
-    $(tag).attr('id', data.jobkey);
-    console.log(" now id name is: " + $(tag).attr('id'));
-    $(tag).data(data);
-    console.log(" saved data: " + JSON.stringify($(tag).data()) );
+    console.log(" ==== tag: " + tag + " data: " + data);
+
+    $(tag).data("job",data);
+    //console.log(" now id name is: " + $(tag).attr('id'));
+    console.log(" saved data: " + JSON.stringify($(tag).data("job")) );
 }
 
+function get_data(url, job) {
+    var obj = {
+        jobkey: "{{job.jobkey}}",
+        jobtitle: "{{job.jobtitle}}",
+        company: "{{job.company}}",
+        city: "{{job.city}}",
+        state: "{{job.state}}",
+        snippet: "{{job.snippet}}"
+    }
+    /*console.log(" url is: " + url + " data: " + JSON.stringify(job));
+    $.ajax({
+        url: "" + url,
+        type: "GET",
+        data: obj,
+        success: function(data, status, xhr) {
+            //console.log(data);
+        },
+        error: function(xhr, status, error) {
+            console.log(xhr, status, error);
+        }
+    });*/
+}
 $(document).ready(function() {
     $("button").click(function(event) {
-        //alert(event.target.id);
+        //var request_path = event.target.id;
         var id = $(this).closest("div").attr("id");
-        console.log(" class is: " + jkey + " data: " + JSON.stringify($('#' + id).data()) );
+        id = id.split("_");
+        //var data = $('#' + id).data("job");
+        //console.log(" data: " + JSON.stringify(data) +
+        // " request path: " + request_path);
+        console.log(" nickname: " + id[0] + " job: " + id[1]);
+        $.ajax({
+            url: "/user/" + id[0] + "/" + id[1],
+            type: "GET",
+            success: function(data, status, xhr) {
+                //console.log(data);
+            },
+            error: function(xhr, status, error) {
+                console.log(xhr, status, error);
+            }
+        });
     });
 });
 /*$(".jkey").click(function(){

@@ -83,9 +83,23 @@ def logout():
     logout_user()
     return redirect(url_for('login'))
 
+@app.route('/index')
+@login_required
+def index():
+    render_template('index.html')
+
+@app.route('/user/<nickname>/<jobkey>', methods=['GET', 'POST'])
+@login_required
+def save_job(nickname, jobkey):
+    print "====yay got here, nickname: %s, jobkey: %s" % (nickname, jobkey)
+    print(request)
+    return redirect(url_for('user', nickname=nickname))
+
 @app.route('/user/<nickname>', methods=['GET', 'POST'])
 @login_required
 def user(nickname):
+    print "shouldn't be here"
+    print(request.args.get("jobkey"))
     user = g.user
     form = JobSearchForm()
     if request.method == 'POST':

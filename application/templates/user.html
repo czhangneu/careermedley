@@ -13,7 +13,7 @@
                     <a data-toggle="dropdown" class="dropdown-toggle"
                        href="#">Profile <b class="caret"></b></a>
                     <ul role="menu" class="dropdown-menu">
-                        <li><a href="{{url_for('profile',nickname = user.nickname) }}">View/Edit Profile</a></li>
+                        <li><a href="#">View/Edit Profile</a></li>
                     </ul>
                 </li>
                 <li class="dropdown">
@@ -70,7 +70,6 @@
                                 <span style="color: red;">[{{error}}]</span>
                             {% endfor %}
                         </div>
-
                         <div class="form-group">
                             {{ form.location(class="form-control", id="location", placeholder="Location") }}
                             {% for error in form.errors.location %}
