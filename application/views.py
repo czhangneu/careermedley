@@ -162,3 +162,53 @@ def profile(nickname):
                            title=nickname,
                            form=form,
                            user=user)
+
+import os
+from werkzeug.utils import secure_filename
+
+basedir = os.path.abspath(os.path.dirname(__file__))
+# SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'app.db')
+# UPLOAD_FOLDER = os.path.join(basedir, 'files/')
+# print UPLOAD_FOLDER
+# if not os.path.exists(UPLOAD_FOLDER):
+#     os.mkdir(UPLOAD_FOLDER)
+
+ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'doc', 'docx'])
+#
+#
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
+#
+@app.route('/user/<nickname>/upload', methods=['GET', 'POST'])
+@login_required
+def upload(nickname):
+    user = g.user
+    UPLOAD_FOLDER_part1 = os.path.join(basedir, user.nickname)
+    UPLOAD_FOLDER_part2 = os.path.join(basedir, user.nickname, 'files/')
+    print UPLOAD_FOLDER_part1
+    print UPLOAD_FOLDER_part2
+    if not os.path.exists(UPLOAD_FOLDER_part1):
+        os.mkdir(UPLOAD_FOLDER_part1)
+    if not os.path.exists(UPLOAD_FOLDER_part2):
+        os.mkdir(UPLOAD_FOLDER_part2)
+    if request.method == 'POST':
+        file = request.files['file']
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            #file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            file.save(os.path.join(UPLOAD_FOLDER_part2, filename))
+            #return redirect(url_for('upload'))
+            return render_template('upload.html', user=user, upload_folder_files=os.listdir(UPLOAD_FOLDER_part2,))
+    #return render_template('upload.html', user=user, files=os.listdir(app.config['UPLOAD_FOLDER'],))
+    return render_template('upload.html', user=user, upload_folder_files=os.listdir(UPLOAD_FOLDER_part2,))
+
+#
+from flask import send_from_directory
+
+@app.route('/user/<nickname>/upload/<filename>')
+def uploaded_file(filename, nickname):
+    UPLOAD_FOLDER_part2 = os.path.join(basedir, g.user.nickname, 'files/')
+
+    return send_from_directory(UPLOAD_FOLDER_part2,
+                               filename)
