@@ -20,7 +20,7 @@
                     <a data-toggle="dropdown" class="dropdown-toggle"
                        href="#">Documents <b class="caret"></b></a>
                     <ul role="menu" class="dropdown-menu">
-                        <li><a href="#">Upload a document</a></li>
+                        <li><a href="{{url_for('upload', nickname=user.nickname)}}">Upload a document</a></li>
                     </ul>
                 </li>
                 <li class="dropdown">
@@ -55,8 +55,10 @@
 {% block top %}
         <div class="row">
             <div class="col-xs-2">
-                <h2>News</h2>
-                <p>HTML is a markup language that is used for creating web pages. The HTML tutorial section will help you understand the basics of HTML, so that you can create your own web pages or website.</p>
+                <h2>Events</h2>
+                <p>
+                    No events at the moment, events coming soon...
+                </p>
                 <p><a href="http://www.tutorialrepublic.com/html-tutorial/" target="_blank" class="btn btn-success">Learn More &raquo;</a></p>
             </div>
             <div class="col-xs-8">
@@ -70,7 +72,6 @@
                                 <span style="color: red;">[{{error}}]</span>
                             {% endfor %}
                         </div>
-
                         <div class="form-group">
                             {{ form.location(class="form-control", id="location", placeholder="Location") }}
                             {% for error in form.errors.location %}
@@ -89,8 +90,10 @@
                 </div>
             </div>
             <div class="col-xs-2">
-                <h2>Bootstrap</h2>
-                <p>Bootstrap is a powerful front-end framework for faster and easier web development. The Bootstrap tutorial section will help you learn the techniques of Bootstrap so that you can quickly create your own website.</p>
+                <h2>News</h2>
+                <p>
+                    Not yet implemented
+                </p>
                 <p><a href="http://www.tutorialrepublic.com/twitter-bootstrap-tutorial/" target="_blank" class="btn btn-success">Learn More &raquo;</a></p>
             </div>
         </div>
