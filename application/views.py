@@ -24,6 +24,7 @@ def before_request():
 # Handles user search request
 @app.route('/', methods=['GET', 'POST'])
 def main_page():
+    user = g.user
     form = JobSearchForm()
     if request.method == 'POST':
         if form.validate_on_submit():
@@ -33,11 +34,13 @@ def main_page():
                 print "range (%d: %s)" % (i, jobs[i])
                 print '*' * 100
             return render_template('main_page.html',
+                                   user=user,
                                    title='CareerMedley',
                                    form=form, jobs=jobs)
         else:
             print " form isn't valid..."
     return render_template('main_page.html',
+                           user=user,
                            title='CareerMedley', form=form)
 
 
