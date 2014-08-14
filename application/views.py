@@ -5,10 +5,9 @@ from flask import render_template, flash, redirect, g, url_for, request, session
 from application import app, lm, db, oid
 from forms import LoginForm, JobSearchForm, ProfileForm
 from job_search import ProcessJobSearch
-from models import User, ROLE_USER, ROLE_ADMIN
+from models import User, Position, ROLE_USER
 from flask_login import login_user, logout_user, login_required, current_user
-import json
-
+from datetime import datetime
 
 @lm.user_loader
 def load_user(user_id):
@@ -80,15 +79,52 @@ def after_login(resp):
     login_user(user, remember=remember_me)
     return redirect(request.args.get('next') or url_for('user', user.nickname))
 
-
 @app.route('/logout')
 def logout():
     logout_user()
     return redirect(url_for('login'))
 
+@app.route('/index')
+@login_required
+def index():
+    render_template('index.html')
+
+# *****************************************************************
+# Page: /user/<nickname>/<jobkey>
+# Method: save_job
+# Description: Saves a job into the database
+# Params: nickname, jobkey
+# *****************************************************************
+@app.route('/user/<nickname>/<jobkey>', methods=['GET', 'POST'])
+@login_required
+def save_job(nickname, jobkey):
+    print "====yay got here, nickname: %s, jobkey: %s" % (nickname, jobkey)
+    getJob = ProcessJobSearch()
+    job = getJob.search_by_jobkeys(jobkey)
+    job_data = job[0]
+    print(job_data['date'])
+    position = Position.query.filter_by(jobkey=job_data['jobkey']).first()
+    if position is None:
+        print "new position, adding to database"
+        dt = datetime.strptime(job_data['date'], "%a, %d %b %Y %H:%M:%S %Z" )
+        print(" time object is: %s" % dt)
+        position = Position(jobkey= job_data['jobkey'], jobtitle=job_data['jobtitle'],
+                            company=job_data['company'], city=job_data['city'],
+                            state=job_data['state'], url=job_data['url'],
+                            post_date=dt, short_desc=job_data['snippet'],
+                            expired=job_data['expired'])
+
+        db.session.add(position)
+        db.session.commit()
+    else:
+        print " this is an old position"
+    return redirect(url_for('user', nickname=nickname))
+
 @app.route('/user/<nickname>', methods=['GET', 'POST'])
 @login_required
 def user(nickname):
+    print "shouldn't be here"
+    print(request.args.get("jobkey"))
     user = g.user
     form = JobSearchForm()
     if request.method == 'POST':
