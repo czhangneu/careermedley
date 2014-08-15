@@ -31,7 +31,7 @@
                         <li><a href="#">Past applications</a></li>
                     </ul>
                 </li>
-                <li><a href="#">Saved Positions</a></li>
+                <li><a href="{{ url_for('bookmarked', nickname=user.nickname, jobkey='True') }}">Saved Positions</a></li>
                 <li class="dropdown">
                     <a data-toggle="dropdown" class="dropdown-toggle"
                        href="#">Employers <b class="caret"></b></a>
