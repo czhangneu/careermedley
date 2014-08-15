@@ -1,4 +1,4 @@
-<div id="{{user.nickname}}_{{job.jobkey}}" >
+<div >
     <a> {{job.jobtitle }}</a>
     <div class="company_details">
         <span>{{job.company}}  - </span>
@@ -12,10 +12,12 @@
                 </td>
                 {% if current_user.is_authenticated() %}
                     <td>
-                        <button type="button" class="btn btn-primary" >Save</button>
+                        <button type="button" id="save_{{user.nickname}}_{{job.jobkey}}"
+                                class="btn btn-primary" >Save</button>
                     </td>
                     <td>
-                        <button type="button" class="btn btn-success" >Apply</button>
+                        <button type="button" id="apply_{{user.nickname}}_{{job.jobkey}}"
+                                class="btn btn-success" >Apply</button>
                     </td>
                 {% endif %}
             </tr>

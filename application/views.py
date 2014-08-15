@@ -84,10 +84,26 @@ def logout():
     logout_user()
     return redirect(url_for('login'))
 
-@app.route('/index')
+# *****************************************************************
+# Method: bookmarked
+# Description: displays the marked jobs from the database
+# Params: nickname, jobkey
+# *****************************************************************
+@app.route('/user/<nickname>/bookmarked/<jobkey>', methods=['GET', 'POST'])
 @login_required
-def index():
-    render_template('index.html')
+def bookmarked(nickname, jobkey):
+    #print "====yay bookmarked got here, nickname: %s, jobkey: %s" % (nickname, jobkey)
+    user = g.user
+    positions = Position.query.all()
+    if(jobkey != True):
+        position = Position.query.filter_by(jobkey=jobkey).first()
+        if position is not None:
+            db.session.delete(position)
+            db.session.commit()
+            positions = Position.query.all()
+    return render_template('marked_jobs.html',
+                           user=user,
+                           positions=positions)
 
 # *****************************************************************
 # Page: /user/<nickname>/<jobkey>

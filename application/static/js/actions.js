@@ -44,23 +44,34 @@ function get_data(url, job) {
 $(document).ready(function() {
     $("button").click(function(event) {
         //var request_path = event.target.id;
-        var id = $(this).closest("div").attr("id");
+        var id = $(this).attr("id");
         id = id.split("_");
-        console.log(" nickname: " + id[0] + " job: " + id[1]);
-        $.ajax({
-            url: "/user/" + id[0] + "/" + id[1],
-            type: "GET",
-            success: function(data, status, xhr) {
-                //console.log(data);
-            },
-            error: function(xhr, status, error) {
-                console.log(xhr, status, error);
-            }
-        });
+        console.log(" button: " + id[0] + " nickname: " + id[1] + " job: " + id[2]);
+        if(id[0] == "save") {
+            $.ajax({
+                url: "/user/" + id[1] + "/" + id[2],
+                type: "GET",
+                success: function(data, status, xhr) {
+                    //console.log(data);
+                },
+                error: function(xhr, status, error) {
+                    console.log(xhr, status, error);
+                }
+            });
+        }
+        else if(id[0] == "delete") {
+            console.log(" delete job: " + id[2]);
+            $.ajax({
+                url: "/user/" + id[1] + "/bookmarked/" + id[2],
+                type: "GET",
+                success: function(data, status, xhr) {
+                    //console.log(data);
+                },
+                error: function(xhr, status, error) {
+                    console.log(xhr, status, error);
+                }
+            });
+        }
     });
 });
-/*$(".jkey").click(function(){
-    alert('clicked!');
-    var jkey = $("button").closest("div").attr("class");
-});*/
 
