@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+{% block navbar %}
+<div xmlns="http://www.w3.org/1999/html">
+        <div id="logo" class="left-side">
+            <img src="/static/images/careerMedley.png" class="image" >
+        </div>
+    </div>
+    <nav class="navbar navbar-inverse " role="navigation">
+        <div id="navbarCollapse" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="{{ url_for('user',nickname = user.nickname) }}">Home</a></li>
+                <li class="dropdown">
+                    <a data-toggle="dropdown" class="dropdown-toggle"
+                       href="#">Profile <b class="caret"></b></a>
+                    <ul role="menu" class="dropdown-menu">
+                        <li><a href="#">View/Edit Profile</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a data-toggle="dropdown" class="dropdown-toggle"
+                       href="#">Documents <b class="caret"></b></a>
+                    <ul role="menu" class="dropdown-menu">
+                        <li><a href="{{url_for('upload', nickname=user.nickname)}}">Upload a document</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a data-toggle="dropdown" class="dropdown-toggle"
+                       href="#">Applications <b class="caret"></b></a>
+                    <ul role="menu" class="dropdown-menu">
+                        <li><a href="{{url_for('list_applications', nickname=user.nickname) }}">Active applications</a></li>
+                        <li><a href="#">Past applications</a></li>
+                    </ul>
+                </li>
+                <li><a href="#">Saved Positions</a></li>
+                <li class="dropdown">
+                    <a data-toggle="dropdown" class="dropdown-toggle"
+                       href="#">Employers <b class="caret"></b></a>
+                    <ul role="menu" class="dropdown-menu">
+                        <li><a href="#">Employers search</a></li>
+                        <li><a href="{{url_for('favorite_employers', nickname=user.nickname)}}">Favorite employers</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="{{ url_for('logout') }}">Sign Out</a></li>
+            </ul>
+            <div class="nav navbar-nav navbar-right user_color">
+                <a class="navbar-brand" id="user_color" href="#">Hi, {{user.nickname}}!</a>
+            </div>
+        </div>
+    </nav>
+
+    <div id="rank" class="left-side">
+        <!--<li class="dropdown">-->
+            <!--<a data-toggle="dropdown" class="dropdown-toggle"-->
+               <!--href="#">Rank Orders <b class="caret"></b></a>-->
+            <!--<ul role="menu" class="dropdown-menu">-->
+                <!--<li><a href="#">Rank by Score</a></li>-->
+                <!--<li><a href="#">Rank by CEO Approval rate</a></li>-->
+            <!--</ul>-->
+        <!--</li>-->
+        <form name="rank" action="#" method="POST">
+            <select name="rank">
+                <option value="Red">Rank by Score</option>
+                <option value="Green">Rank by CEO Approval Rate</option>
+            </select>
+            <button type="submit">Reorder</button>
+        </form>
+    </div>
+    <div class="center">
+        <!--<table border="1" style="width:660px">-->
+            <!--<col width="110px" />-->
+            <!--<col width="110px" />-->
+            <!--<col width="110px" />-->
+            <!--<col width="110px" />-->
+            <!--<col width="110px" />-->
+            <!--<col width="110px" />-->
+        <!--<tr> <td>employer_name</td>-->
+             <!--<td>num_ratings</td>-->
+             <!--<td>score</td>-->
+             <!--<td>ceo</td>-->
+             <!--<td>num_ceo_reviews</td>-->
+             <!--<td>ceo_approval</td>-->
+        <!--</tr>-->
+        <table class="table table-striped">
+            <col width="110px" />
+            <col width="110px" />
+            <col width="110px" />
+            <col width="110px" />
+            <col width="110px" />
+            <col width="110px" />
+            <thead>
+                <tr>
+                    <th>Employer</th>
+                    <th>Num_ratings</th>
+                    <th>Score</th>
+                    <th>CEO</th>
+                    <th>Num_ceo_reviews</th>
+                    <th>CEO_approval</th>
+                </tr>
+            </thead>
+         </table>
+        {% if employers %}
+            {% for employer in employers.items %}
+                {% include 'employers.html' %}
+            {% endfor %}
+            {% if employers.has_prev %}
+                <a href="{{url_for('favorite_employers', nickname=user.nickname,
+                 page = employers.prev_num) }}"><< Prev employers</a>
+            {% else %}<< Prev employers
+            {% endif %} |
+            {% if employers.has_next %}
+                <a href="{{url_for('favorite_employers', nickname=user.nickname,
+                page = employers.next_num) }}"> Next employers >></a>
+            {% else %} Nrev employers >>
+            {% endif %}
+
+        {% endif %}
+    </div>
+
+{% endblock %}
