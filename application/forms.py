@@ -24,3 +24,11 @@ class ProfileForm(Form):
      major = StringField('Major', [InputRequired()])
      degree = StringField('Degree', [InputRequired()])
      submit = SubmitField('Submit')
+
+class ApplicationForm(Form):
+    apply_date = StringField('Apply Date', [InputRequired()])
+    resume_version = StringField('Resume', [InputRequired()])
+    cv_version = StringField('CV', [InputRequired()])
+    username_on_website = StringField('Username', [InputRequired()])
+    password_on_website = StringField('Password', [InputRequired()])
+    submit = SubmitField('Submit')
