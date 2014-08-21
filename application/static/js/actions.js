@@ -65,11 +65,15 @@ $(document).ready(function() {
                 x = "You pressed Cancel!";
             }*/
             $.ajax({
-                url: "/user/" + id[1] + "/" + id[2] + "/apply",
+                url: "/user/" + id[1] + "/" + id[2] + "/proxy",
                 type: "GET",
-                success: function(data, status, xhr) {
-                    //console.log(data);
-                    $(document.body).html(data);
+                dataType: "json",
+                success: function(response) {
+                    console.log(response);
+                    if(response.redirect) {
+                        window.location.href = response.redirect;
+                    }
+                    //$(document.body).html(data);
                 },
                 error: function(xhr, status, error) {
                     console.log(xhr, status, error);
@@ -83,7 +87,7 @@ $(document).ready(function() {
         id = id.split("_");
         if (id != undefined) {
             var url = "/user/" + id[1] + "/" + id[2] + "/proxy";
-            $(window).location.hash = url;
+            //$(window).location.hash = url;
             $.ajax({
                 url: url,
                 type: "GET",

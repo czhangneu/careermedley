@@ -15,6 +15,8 @@ from models import User, Position, Account, Employer,\
 from flask_login import login_user, logout_user, login_required, current_user
 from datetime import datetime
 from config import ALLOWED_EXTENSIONS
+import  json
+g
 
 @lm.user_loader
 def load_user(user_id):
@@ -175,9 +177,10 @@ def save_job(nickname, jobkey):
 
 @app.route('/user/<nickname>/<jobkey>/proxy')
 @login_required
-def application_proxy(nickname, jobkey):
+def proxy_application(nickname, jobkey):
     print "+++++ reroute from proxy application ++++"
-    return redirect(url_for('save_applications', nickname=nickname, jobkey=jobkey))
+    return json.dumps({"redirect" : "/user/%s/%s/apply" % (nickname, jobkey)})
+    #return redirect(url_for('save_applications', nickname=nickname, jobkey=jobkey))
 
 # *****************************************************************
 # Page: /user/<nickname>/<jobkey>/apply
@@ -188,7 +191,7 @@ def application_proxy(nickname, jobkey):
 @app.route('/user/<nickname>/<jobkey>/apply', methods=['GET', 'POST'])
 @login_required
 def save_applications(nickname, jobkey):
-    print "====== got into save_applications jobkey: " , jobkey
+    print "====== got into save_applications jobkey: ", jobkey
     set_upload_dir(nickname)
     form = ApplicationForm()
     if request.method == 'POST' and form.validate_on_submit():
@@ -223,7 +226,7 @@ def save_applications(nickname, jobkey):
 # page.
 # Params: nickname
 # *****************************************************************
-#@app.route('/user/<nickname>/applications', methods=['GET', 'POST'])
+@app.route('/user/<nickname>/applications', methods=['GET', 'POST'])
 @login_required
 def list_applications(nickname):
     user = User.query.filter_by(nickname=nickname).first()
