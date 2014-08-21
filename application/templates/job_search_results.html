@@ -13,11 +13,11 @@
                 {% if current_user.is_authenticated() %}
                     <td>
                         <button type="button" id="save_{{user.nickname}}_{{job.jobkey}}"
-                                class="btn btn-primary" >Save</button>
+                                class="btn btn-primary save_button" >Save</button>
                     </td>
                     <td>
                         <button type="button" id="apply_{{user.nickname}}_{{job.jobkey}}"
-                                class="btn btn-success" >Apply</button>
+                                class="btn btn-success apply_button" >Apply</button>
                     </td>
                 {% endif %}
             </tr>
