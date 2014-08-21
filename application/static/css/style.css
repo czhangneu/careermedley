@@ -33,3 +33,11 @@
     padding: 2em 0 2em;
 }
 
+.form_small {
+    width: 20%;
+}
+
+.form_medium {
+    width: 40%;
+}
+
