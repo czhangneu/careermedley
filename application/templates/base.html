@@ -3,14 +3,18 @@
 {% extends "bootstrap/base.html" %}
 
 <!-- Add our css to the head block -->
-{% block css %}
+{% block css_base %}
     {{super()}}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/datepicker3.css') }}">
+    <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.2/css/jquery.dataTables.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 {% endblock %}
-{% block js_top %}
+{% block js_base %}
     {{super()}}
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="{{ url_for('static', filename='js/moment.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap-datepicker.js') }}"></script>
     <script src="{{ url_for('static', filename='js/actions.js') }}"></script>
+    <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.2/js/jquery.dataTables.js"></script>
 {% endblock %}
 
  <!-- Change the title -->
