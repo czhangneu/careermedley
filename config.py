@@ -16,6 +16,8 @@ import os
 basedir = os.path.abspath(os.path.dirname(__file__))
 print "====basedir is: " + basedir
 
+ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'doc', 'docx'])
+
 PUBLISHER = '5950869068484812'
 SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'app.db')
 SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir, 'db_repository')

@@ -1,13 +1,15 @@
 #!/usr/bin/python
 __author__ = 'onyekaigabari'
 
-from flask import render_template, flash, redirect, g, url_for, request, session
+from flask import render_template, flash, \
+    redirect, g, url_for, request, session, send_from_directory
 from application import app, lm, db, oid
-from forms import LoginForm, JobSearchForm, ProfileForm
+from forms import LoginForm, JobSearchForm, ProfileForm, ApplicationForm
 from job_search import ProcessJobSearch
-from models import User, Position, ROLE_USER
+from models import User, Position, Account, ROLE_USER
 from flask_login import login_user, logout_user, login_required, current_user
 from datetime import datetime
+from config import ALLOWED_EXTENSIONS
 
 @lm.user_loader
 def load_user(user_id):
@@ -18,6 +20,7 @@ def load_user(user_id):
 @app.before_request
 def before_request():
     g.user = current_user
+    g.user.upload_dir = os.path.join(basedir, g.user.nickname, 'files/')
 
 
 # Handles user search request
@@ -85,25 +88,42 @@ def logout():
     return redirect(url_for('login'))
 
 # *****************************************************************
-# Method: bookmarked
+# Method: delete
 # Description: displays the marked jobs from the database
 # Params: nickname, jobkey
 # *****************************************************************
 @app.route('/user/<nickname>/bookmarked/<jobkey>', methods=['GET', 'POST'])
 @login_required
-def bookmarked(nickname, jobkey):
-    #print "====yay bookmarked got here, nickname: %s, jobkey: %s" % (nickname, jobkey)
+def delete(nickname, jobkey):
+    print "====yay delete got here, nickname: %s, jobkey:%s" % (nickname, jobkey)
     user = g.user
-    positions = Position.query.all()
-    if(jobkey != True):
-        position = Position.query.filter_by(jobkey=jobkey).first()
-        if position is not None:
-            db.session.delete(position)
-            db.session.commit()
-            positions = Position.query.all()
+    position = Position.query.filter_by(jobkey=jobkey).first()
+    if position is None:
+        print(" couldn't delete job with jobkey: ", jobkey)
+    else:
+        # delete marked position
+        account = Account.query.filter_by(id=g.user.id).first()
+        position.unmark_position(account)
+        db.session.add(position)
+        db.session.delete(position)
+        db.session.commit()
+    return redirect(url_for('bookmarked', nickname=nickname))
+
+# *****************************************************************
+# Method: bookmarked
+# Description: displays the marked jobs from the database
+# Params: nickname, jobkey
+# *****************************************************************
+@app.route('/user/<nickname>/bookmarked', methods=['GET', 'POST'])
+@login_required
+def bookmarked(nickname):
+    account = Account.query.filter_by(id=g.user.id).first()
+    marked_positions = account.get_all_marked_positions()
+    print "-----marked positions for Account: ", marked_positions
+
     return render_template('marked_jobs.html',
-                           user=user,
-                           positions=positions)
+                           user=g.user,
+                           positions=marked_positions)
 
 # *****************************************************************
 # Page: /user/<nickname>/<jobkey>
@@ -114,48 +134,118 @@ def bookmarked(nickname, jobkey):
 @app.route('/user/<nickname>/<jobkey>', methods=['GET', 'POST'])
 @login_required
 def save_job(nickname, jobkey):
-    print "====yay got here, nickname: %s, jobkey: %s" % (nickname, jobkey)
     getJob = ProcessJobSearch()
     job = getJob.search_by_jobkeys(jobkey)
     job_data = job[0]
+    print "====yay got here, nickname: %s, jobkey: %s, job: %s" % (nickname, jobkey, job)
     print(job_data['date'])
+
     position = Position.query.filter_by(jobkey=job_data['jobkey']).first()
     if position is None:
-        print "new position, adding to database"
         dt = datetime.strptime(job_data['date'], "%a, %d %b %Y %H:%M:%S %Z" )
         print(" time object is: %s" % dt)
-        position = Position(jobkey= job_data['jobkey'], jobtitle=job_data['jobtitle'],
-                            company=job_data['company'], city=job_data['city'],
-                            state=job_data['state'], url=job_data['url'],
-                            post_date=dt, short_desc=job_data['snippet'],
+        position = Position(jobkey=job_data['jobkey'], company=job_data['company'],
+                            jobtitle=job_data['jobtitle'], city=job_data['city'],
+                            state=job_data['state'], snippet=job_data['snippet'],
+                            post_date=dt, url=job_data['url'],
                             expired=job_data['expired'])
-
+        print "new position, adding to database: %s", position
         db.session.add(position)
         db.session.commit()
+
+        # insert into marked position table
+        account = Account.query.filter_by(id=g.user.id).first()
+        position.mark_position(account)
+        db.session.add(position)
+        db.session.commit()
+
     else:
         print " this is an old position"
+
     return redirect(url_for('user', nickname=nickname))
 
+# *****************************************************************
+# Page: /user/<nickname>
+# Method: user
+# Description: This will display the profile page if the user hasn't
+# created an account, or the user's main
+# page.
+# Params: nickname
+# *****************************************************************
+@app.route('/user/<nickname>/applications', methods=['GET', 'POST'])
+@login_required
+def applications(nickname):
+    form = ApplicationForm()
+    if request.method == 'POST' and form.validate_on_submit():
+        apply_date = form.apply_date.data
+        resume = form.resume_version.data
+        cv = form.cv_version.data
+        username = form.username_on_website.data
+        password = form.password_on_website.data
+        print "values received: ", apply_date, resume, cv, username, password
+    #print "documents available: ", os.listdir(g.user.upload_dir), " path is: ", g.user.upload_dir
+    documents = os.listdir(g.user.upload_dir)
+    return render_template('applications.html',
+                           nickname=nickname,
+                           user=g.user, form=form,
+                           documents=documents)
+
+# *****************************************************************
+# Page: /user/<nickname>
+# Method: user
+# Description: This will display the profile page if the user hasn't
+# created an account, or the user's main
+# page.
+# Params: nickname
+# *****************************************************************
 @app.route('/user/<nickname>', methods=['GET', 'POST'])
 @login_required
 def user(nickname):
-    print "shouldn't be here"
     print(request.args.get("jobkey"))
     user = g.user
-    form = JobSearchForm()
-    if request.method == 'POST':
-        if form.validate_on_submit():
-            getJobs = ProcessJobSearch()
-            jobs = getJobs.job_search(form.job.data, form.location.data)
-            for i in range(len(jobs)):
-                print "range (%d: %s)" % (i, jobs[i])
-                print '*' * 100
+    account = Account.query.filter_by(id=user.id).first()
+    print "are we here? account: %s" % account
+    if account is None:
+        form = ProfileForm()
+        if request.method == 'POST' and form.validate_on_submit():
+            print "yes we got here....user.id: %s, user.email: %s" % (user.id, user.email)
+            firstname = form.firstname.data
+            lastname = form.lastname.data
+            city = form.city.data
+            state = form.state.data
+            country = form.country.data
+            zipcode = form.zipcode.data
+            major = form.major.data
+            degree = form.degree.data
+            account = Account(id=user.id, firstname=firstname, lastname=lastname,
+                        city=city, state=state, country=country, zipcode=zipcode,
+                        major=major, degree=degree)
+            print " account: %s" % account
+            db.session.add(account)
+            db.session.commit()
+            jobForm = JobSearchForm()
             return render_template('user.html',
-                                   title='CareerMedley',
-                                   form=form, user=user, jobs=jobs)
+                                   nickname=nickname,
+                                   user=user,
+                                   form=jobForm)
+        return render_template('profile.html', nickname=nickname,
+                               user=user,
+                               form=form)
+    else:
+        jobForm = JobSearchForm()
+        if request.method == 'POST':
+            if jobForm.validate_on_submit():
+                getJobs = ProcessJobSearch()
+                jobs = getJobs.job_search(jobForm.job.data, jobForm.location.data)
+                for i in range(len(jobs)):
+                    print "range (%d: %s)" % (i, jobs[i])
+                    print '*' * 100
+                return render_template('user.html',
+                                       title='CareerMedley',
+                                       form=jobForm, user=user, jobs=jobs)
     return render_template('user.html',
                            title=nickname,
-                           form=form,
+                           form=jobForm,
                            user=user)
 
 @app.route('/user/<nickname>/profile', methods=['GET', 'POST'])
@@ -189,7 +279,6 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 # if not os.path.exists(UPLOAD_FOLDER):
 #     os.mkdir(UPLOAD_FOLDER)
 
-ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'doc', 'docx'])
 #
 #
 def allowed_file(filename):
@@ -200,31 +289,19 @@ def allowed_file(filename):
 @login_required
 def upload(nickname):
     user = g.user
-    UPLOAD_FOLDER_part1 = os.path.join(basedir, user.nickname)
-    UPLOAD_FOLDER_part2 = os.path.join(basedir, user.nickname, 'files/')
-    print UPLOAD_FOLDER_part1
-    print UPLOAD_FOLDER_part2
-    if not os.path.exists(UPLOAD_FOLDER_part1):
-        os.mkdir(UPLOAD_FOLDER_part1)
-    if not os.path.exists(UPLOAD_FOLDER_part2):
-        os.mkdir(UPLOAD_FOLDER_part2)
+    #print "uploaded folder is: " , user.upload_dir
+    if not os.path.exists(user.upload_dir):
+        os.makedirs(user.upload_dir)
     if request.method == 'POST':
         file = request.files['file']
+        print "file requested: ", file
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            #file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            file.save(os.path.join(UPLOAD_FOLDER_part2, filename))
-            #return redirect(url_for('upload'))
-            return render_template('upload.html', user=user, upload_folder_files=os.listdir(UPLOAD_FOLDER_part2,))
-    #return render_template('upload.html', user=user, files=os.listdir(app.config['UPLOAD_FOLDER'],))
-    return render_template('upload.html', user=user, upload_folder_files=os.listdir(UPLOAD_FOLDER_part2,))
+            file.save(os.path.join(user.upload_dir, filename))
 
-#
-from flask import send_from_directory
+    return render_template('upload.html', user=user, upload_folder_files=os.listdir(user.upload_dir))
 
 @app.route('/user/<nickname>/upload/<filename>')
 def uploaded_file(filename, nickname):
-    UPLOAD_FOLDER_part2 = os.path.join(basedir, g.user.nickname, 'files/')
-
-    return send_from_directory(UPLOAD_FOLDER_part2,
-                               filename)
+    user = g.user
+    return send_from_directory(user.upload_dir, filename)

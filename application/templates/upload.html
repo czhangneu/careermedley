@@ -27,7 +27,7 @@
                     <a data-toggle="dropdown" class="dropdown-toggle"
                        href="#">Applications <b class="caret"></b></a>
                     <ul role="menu" class="dropdown-menu">
-                        <li><a href="#">Active applications</a></li>
+                        <li><a href="{{url_for('applications', nickname=user.nickname) }}">Active applications</a></li>
                         <li><a href="#">Past applications</a></li>
                     </ul>
                 </li>
