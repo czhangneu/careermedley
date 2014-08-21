@@ -124,7 +124,7 @@ class Application(db.Model):
 
 class Document(db.Model):
     id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
-    doc_name = db.Column(db.String(LONG_STR_LEN), unique=True)
+    doc_name = db.Column(db.String(LONG_STR_LEN), primary_key=True, unique=True)
     doc_path = db.Column(db.String(LONG_STR_LEN), unique=True)
 
     user = db.relationship('User', backref=db.backref('documents', lazy='dynamic'))

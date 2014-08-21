@@ -1,110 +1,16 @@
-{% extends "base.html" %}
-{% block navbar %}
-    <div>
-        <div id="logo" class="left-side">
-            <img src="/static/images/careerMedley.png" class="image" >
-        </div>
-    </div>
-    <nav class="navbar navbar-inverse " role="navigation">
-        <div id="navbarCollapse" class="collapse navbar-collapse">
-            <ul class="nav navbar-nav">
-                <li><a href="{{ url_for('user',nickname = user.nickname) }}">Home</a></li>
-                <li class="dropdown">
-                    <a data-toggle="dropdown" class="dropdown-toggle"
-                       href="#">Profile <b class="caret"></b></a>
-                    <ul role="menu" class="dropdown-menu">
-                        <li><a href="#">View/Edit Profile</a></li>
-                    </ul>
-                </li>
-                <li class="dropdown">
-                    <a data-toggle="dropdown" class="dropdown-toggle"
-                       href="#">Documents <b class="caret"></b></a>
-                    <ul role="menu" class="dropdown-menu">
-                        <li><a href="{{url_for('upload', nickname=user.nickname)}}">Upload a document</a></li>
-                    </ul>
-                </li>
-                <li class="dropdown">
-                    <a data-toggle="dropdown" class="dropdown-toggle"
-                       href="#">Applications <b class="caret"></b></a>
-                    <ul role="menu" class="dropdown-menu">
-                        <li><a href="#">Active applications</a></li>
-                        <li><a href="#">Past applications</a></li>
-                    </ul>
-                </li>
-                <li><a href="{{ url_for('bookmarked', nickname=user.nickname) }}">Saved Positions</a></li>
-                <li class="dropdown">
-                    <a data-toggle="dropdown" class="dropdown-toggle"
-                       href="#">Employers <b class="caret"></b></a>
-                    <ul role="menu" class="dropdown-menu">
-                        <li><a href="#">Employers search</a></li>
-                        <li><a href="#">Favorite employers</a></li>
-                    </ul>
-                </li>
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-                <li><a href="{{ url_for('logout') }}">Sign Out</a></li>
-            </ul>
-            <div class="nav navbar-nav navbar-right user_color">
-                <a class="navbar-brand" id="user_color" href="#">Hi, {{user.nickname}}!</a>
-            </div>
-        </div>
-    </nav>
-{% endblock %}
-
-<!-- Modify bootstrap's body content with ours -->
-{% block top %}
-    <div class="row">
+<div>
+    <a href="{{ position.url }}" target="_blank"> {{position.jobtitle }}</a>
     <div class="company_details">
+        <span>{{position.company}}  - </span>
+        <span>{{position.city}}, {{position.state}} <b>Post Date: </b> {{position.date}}</span>
     </div>
-
-        <form class="form-horizontal" method="POST" name="main_page">
-            {{ form.hidden_tag() }}
-            <div class="form-group">
-                {{ form.apply_date.label }}
-                {{ form.apply_date(class="form-control form_small datepicker",
-                placeholder="Date") }}
-                {% for error in form.errors.apply_date %}
-                    <span style="color: red;">[{{error}}]</span>
-                {% endfor %}
-            </div>
-            <div class="form-group input-group">
-                {{ form.resume_version(class="form-control doc_form_elem", placeholder="Resume") }}
-                {% for error in form.errors.resume_version %}
-                    <span style="color: red;">[{{error}}]</span>
-                {% endfor %}
-
-                {% if documents %}
-                    {% include 'job_documents.html' %}
-                {% endif %}
-            </div>
-            <div class="form-group input-group">
-                {{ form.cv_version(class="form-control doc_form_elem", placeholder="CV") }}
-                {% for error in form.errors.cv_version %}
-                    <span style="color: red;">[{{error}}]</span>
-                {% endfor %}
-
-                {% if documents %}
-                    {% include 'job_documents.html' %}
-                {% endif %}
-            </div>
-            <div class="form-group">
-                {{ form.username_on_website.label }}
-                {{ form.username_on_website(class="form-control form_medium", placeholder="Username") }}
-                {% for error in form.errors.username_on_website %}
-                    <span style="color: red;">[{{error}}]</span>
-                {% endfor %}
-            </div>
-            <div class="form-group">
-                {{ form.password_on_website.label }}
-                {{ form.password_on_website(class="form-control form_medium", placeholder="Password") }}
-                {% for error in form.errors.password_on_website %}
-                    <span style="color: red;">[{{error}}]</span>
-                {% endfor %}
-            </div>
-            <div class="form-group">
-                {{ form.submit(class="btn btn-primary") }}
-            </div>
-
-        </form>
-    </div>
-{% endblock %}
+    <table class="table">
+        <tbody>
+            <tr class="active">
+                <td>
+                    <span>{{position.snippet|safe}}</span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

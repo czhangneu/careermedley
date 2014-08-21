@@ -32,3 +32,12 @@ class ApplicationForm(Form):
     username_on_website = StringField('Username', [InputRequired()])
     password_on_website = StringField('Password', [InputRequired()])
     submit = SubmitField('Submit')
+
+class EmployerForm(Form):
+    employer_name = StringField('Employer Name', [InputRequired()])
+    num_ratings = StringField('Ratings', [InputRequired()])
+    score = StringField('Score', [InputRequired()])
+    ceo_name = StringField('CEO name', [InputRequired()])
+    num_ceo_review = StringField('CEO review', [InputRequired()])
+    ceo_approval = StringField('CEO Approval')
+    submit = SubmitField('Submit')

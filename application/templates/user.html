@@ -13,7 +13,7 @@
                     <a data-toggle="dropdown" class="dropdown-toggle"
                        href="#">Profile <b class="caret"></b></a>
                     <ul role="menu" class="dropdown-menu">
-                        <li><a href="#">View/Edit Profile</a></li>
+                        <li><a href="{{url_for('profile',nickname = user.nickname) }}">View/Edit Profile</a></li>
                     </ul>
                 </li>
                 <li class="dropdown">
@@ -27,7 +27,7 @@
                     <a data-toggle="dropdown" class="dropdown-toggle"
                        href="#">Applications <b class="caret"></b></a>
                     <ul role="menu" class="dropdown-menu">
-                        <li><a href="{{url_for('applications', nickname=user.nickname) }}">Active applications</a></li>
+                        <li><a href="{{url_for('list_applications', nickname=user.nickname) }}">Active applications</a></li>
                         <li><a href="#">Past applications</a></li>
                     </ul>
                 </li>
@@ -37,7 +37,7 @@
                        href="#">Employers <b class="caret"></b></a>
                     <ul role="menu" class="dropdown-menu">
                         <li><a href="#">Employers search</a></li>
-                        <li><a href="#">Favorite employers</a></li>
+                        <li><a href="{{ url_for('favorite_employers', nickname = user.nickname) }}">Favorite employers</a></li>
                     </ul>
                 </li>
             </ul>

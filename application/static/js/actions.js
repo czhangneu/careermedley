@@ -20,15 +20,13 @@ function set_data(tag, data) {
 }
 
 function set_form(doc,obj) {
+    console.log(" got doc: " + doc);
     var c_div = $(obj).closest("div");
     var parent = $(c_div).parent();
     var form_elem = $(parent).children("input")
     $(form_elem).val(doc);
 }
 
-function split_id(id) {
-
-}
 $(document).ready(function() {
     $(".datepicker").datepicker('update').on('changeDate', function(ev) {
         console.log(" got a change");
@@ -67,10 +65,11 @@ $(document).ready(function() {
                 x = "You pressed Cancel!";
             }*/
             $.ajax({
-                url: "/user/" + id[1] + "/apply/" + id[2],
+                url: "/user/" + id[1] + "/" + id[2] + "/apply",
                 type: "GET",
                 success: function(data, status, xhr) {
                     //console.log(data);
+                    $(document.body).html(data);
                 },
                 error: function(xhr, status, error) {
                     console.log(xhr, status, error);
@@ -83,8 +82,10 @@ $(document).ready(function() {
         var id = $(this).attr("id");
         id = id.split("_");
         if (id != undefined) {
+            var url = "/user/" + id[1] + "/" + id[2] + "/proxy";
+            $(window).location.hash = url;
             $.ajax({
-                url: "/user/" + id[1] + "/" + id[2],
+                url: url,
                 type: "GET",
                 success: function(data, status, xhr) {
                     //console.log(data);

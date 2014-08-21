@@ -27,7 +27,7 @@
                     <a data-toggle="dropdown" class="dropdown-toggle"
                        href="#">Applications <b class="caret"></b></a>
                     <ul role="menu" class="dropdown-menu">
-                        <li><a href="{{url_for('list_applications', nickname=user.nickname) }}">Active applications</a></li>
+                        <li><a href="#">Active applications</a></li>
                         <li><a href="#">Past applications</a></li>
                     </ul>
                 </li>
@@ -54,10 +54,57 @@
 <!-- Modify bootstrap's body content with ours -->
 {% block top %}
     <div class="row">
-        {% if positions %}
-            {% for position in positions %}
-                {% include 'job_marked_results.html' %}
-            {% endfor %}
-        {% endif %}
+    <div class="company_details">
+    </div>
+
+        <form class="form-horizontal" method="POST" name="main_page">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+                {{ form.apply_date.label }}
+                {{ form.apply_date(class="form-control form_small datepicker",
+                placeholder="Date") }}
+                {% for error in form.errors.apply_date %}
+                    <span style="color: red;">[{{error}}]</span>
+                {% endfor %}
+            </div>
+            <div class="form-group input-group">
+                {{ form.resume_version(class="form-control doc_form_elem", placeholder="Resume") }}
+                {% for error in form.errors.resume_version %}
+                    <span style="color: red;">[{{error}}]</span>
+                {% endfor %}
+
+                {% if documents %}
+                    {% include 'job_documents.html' %}
+                {% endif %}
+            </div>
+            <div class="form-group input-group">
+                {{ form.cv_version(class="form-control doc_form_elem", placeholder="CV") }}
+                {% for error in form.errors.cv_version %}
+                    <span style="color: red;">[{{error}}]</span>
+                {% endfor %}
+
+                {% if documents %}
+                    {% include 'job_documents.html' %}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.username_on_website.label }}
+                {{ form.username_on_website(class="form-control form_medium", placeholder="Username") }}
+                {% for error in form.errors.username_on_website %}
+                    <span style="color: red;">[{{error}}]</span>
+                {% endfor %}
+            </div>
+            <div class="form-group">
+                {{ form.password_on_website.label }}
+                {{ form.password_on_website(class="form-control form_medium", placeholder="Password") }}
+                {% for error in form.errors.password_on_website %}
+                    <span style="color: red;">[{{error}}]</span>
+                {% endfor %}
+            </div>
+            <div class="form-group">
+                {{ form.submit(class="btn btn-primary") }}
+            </div>
+
+        </form>
     </div>
 {% endblock %}
