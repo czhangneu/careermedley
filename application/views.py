@@ -148,7 +148,7 @@ def save_job(nickname, jobkey):
     getJob = ProcessJobSearch()
     job = getJob.search_by_jobkeys(jobkey)
     job_data = job[0]
-    print "====yay got here, nickname: %s, jobkey: %s, job: %s" % (nickname, jobkey, job)
+    #print "====yay got here, nickname: %s, jobkey: %s, job: %s" % (nickname, jobkey, job)
     print(job_data['date'])
 
     position = Position.query.filter_by(jobkey=job_data['jobkey']).first()
@@ -175,12 +175,16 @@ def save_job(nickname, jobkey):
 
     return redirect(url_for('user', nickname=nickname))
 
+# *****************************************************************
+# Page: /user/<nickname>/<jobkey>/proxy
+# Method: proxy_application
+# Description: reroute to the apply page
+# Params: nickname, jobkey
+# *****************************************************************
 @app.route('/user/<nickname>/<jobkey>/proxy')
 @login_required
 def proxy_application(nickname, jobkey):
-    print "+++++ reroute from proxy application ++++"
     return json.dumps({"redirect" : "/user/%s/%s/apply" % (nickname, jobkey)})
-    #return redirect(url_for('save_applications', nickname=nickname, jobkey=jobkey))
 
 # *****************************************************************
 # Page: /user/<nickname>/<jobkey>/apply
@@ -194,6 +198,15 @@ def save_applications(nickname, jobkey):
     print "====== got into save_applications jobkey: ", jobkey
     set_upload_dir(nickname)
     form = ApplicationForm()
+    job_data = []
+    #check if the jobkey exists in the Position table
+    job_data = Position.query.filter_by(jobkey=jobkey).first();
+    if job_data is None:
+        getJob = ProcessJobSearch()
+        job = getJob.search_by_jobkeys(jobkey)
+        job_data = job[0]
+        print "title: %s, jobkey: %s, company: %s" % (job_data['jobtitle'],
+                                                  job_data['jobkey'], job_data['company'])
     if request.method == 'POST' and form.validate_on_submit():
         apply_date = form.apply_date.data
         resume = form.resume_version.data
@@ -214,7 +227,7 @@ def save_applications(nickname, jobkey):
     print "documents available: ", os.listdir(g.user.upload_dir), " path is: ", g.user.upload_dir
     documents = os.listdir(g.user.upload_dir)
     return render_template('save_applications.html',
-                           nickname=nickname,
+                           job=job_data,
                            user=g.user, form=form,
                            documents=documents)
 

@@ -54,10 +54,23 @@
 <!-- Modify bootstrap's body content with ours -->
 {% block top %}
     <div class="row">
-    <div class="company_details">
-    </div>
-
-        <form class="form-horizontal" method="POST" name="main_page">
+        {% if job %}
+            <a href="{{ job.url }}" target="_blank"> {{job.jobtitle }}</a>
+            <div class="company_details">
+                <span>{{job.company}}  - </span>
+                <span>{{job.city}}, {{job.state}}</span>
+            </div>
+            <table class="table">
+                <tbody>
+                    <tr class="active">
+                        <td>
+                            <span>{{job.snippet|safe}}</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        {% endif %}
+        <form class="form-vertical" method="POST" name="main_page">
             {{ form.hidden_tag() }}
             <div class="form-group">
                 {{ form.apply_date.label }}
@@ -72,19 +85,21 @@
                 {% for error in form.errors.resume_version %}
                     <span style="color: red;">[{{error}}]</span>
                 {% endfor %}
-
                 {% if documents %}
                     {% include 'job_documents.html' %}
+                {% else %}
+                    <span style="color: blue;">[please upload a document using the documents menu]</span>
                 {% endif %}
             </div>
             <div class="form-group input-group">
                 {{ form.cv_version(class="form-control doc_form_elem", placeholder="CV") }}
-                {% for error in form.errors.cv_version %}
+                {% for error in form.errors.resume_version %}
                     <span style="color: red;">[{{error}}]</span>
                 {% endfor %}
-
                 {% if documents %}
                     {% include 'job_documents.html' %}
+                {% else %}
+                    <span style="color: blue;">[please upload a document using the documents menu]</span>
                 {% endif %}
             </div>
             <div class="form-group">
@@ -104,7 +119,6 @@
             <div class="form-group">
                 {{ form.submit(class="btn btn-primary") }}
             </div>
-
         </form>
     </div>
 {% endblock %}

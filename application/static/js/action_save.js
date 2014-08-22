@@ -20,13 +20,15 @@ function set_data(tag, data) {
 }
 
 function set_form(doc,obj) {
-    console.log(" got doc: " + doc);
     var c_div = $(obj).closest("div");
     var parent = $(c_div).parent();
     var form_elem = $(parent).children("input")
     $(form_elem).val(doc);
 }
 
+function split_id(id) {
+
+}
 $(document).ready(function() {
     $(".datepicker").datepicker('update').on('changeDate', function(ev) {
         console.log(" got a change");
@@ -65,15 +67,10 @@ $(document).ready(function() {
                 x = "You pressed Cancel!";
             }*/
             $.ajax({
-                url: "/user/" + id[1] + "/" + id[2] + "/proxy",
+                url: "/user/" + id[1] + "/apply/" + id[2],
                 type: "GET",
-                dataType: "json",
-                success: function(response) {
-                    console.log(response);
-                    if(response.redirect) {
-                        window.location.href = response.redirect;
-                    }
-                    //$(document.body).html(data);
+                success: function(data, status, xhr) {
+                    //console.log(data);
                 },
                 error: function(xhr, status, error) {
                     console.log(xhr, status, error);
@@ -86,10 +83,8 @@ $(document).ready(function() {
         var id = $(this).attr("id");
         id = id.split("_");
         if (id != undefined) {
-            var url = "/user/" + id[1] + "/" + id[2];
-            //$(window).location.hash = url;
             $.ajax({
-                url: url,
+                url: "/user/" + id[1] + "/" + id[2],
                 type: "GET",
                 success: function(data, status, xhr) {
                     //console.log(data);
@@ -100,5 +95,61 @@ $(document).ready(function() {
             });
         }
     });
+
+    /*$("button").click(function(event) {
+        //var request_path = event.target.id;
+        var id = $(this).attr("id");
+        console.log("id is: " + id);
+        if(id != undefined) {
+            id = id.split("_");
+            console.log(" button: " + id[0] + " nickname: " + id[1] + " job: " + id[2]);
+            if(id[0] == "save") {
+                $.ajax({
+                    url: "/user/" + id[1] + "/" + id[2],
+                    type: "GET",
+                    success: function(data, status, xhr) {
+                        //console.log(data);
+                    },
+                    error: function(xhr, status, error) {
+                        console.log(xhr, status, error);
+                    }
+                });
+            }
+            else if(id[0] == "delete") {
+                console.log(" delete job: " + id[2]);
+                $.ajax({
+                    url: "/user/" + id[1] + "/bookmarked/" + id[2],
+                    type: "GET",
+                    success: function(data, status, xhr) {
+                        //console.log(data);
+                        $(document.body).html(data);
+                    },
+                    error: function(xhr, status, error) {
+                        console.log(xhr, status, error);
+                    }
+                });
+            }
+            else if (id[0] == "apply") {
+                console.log(" apply for job: " + id[2]);
+                alert(" Would you like to apply for job id: " + id[2] + " ?");
+                var r = confirm("Press a button");
+                if (r == true) {
+                    x = "You pressed OK!";
+                } else {
+                    x = "You pressed Cancel!";
+                }
+                $.ajax({
+                    url: "/user/" + id[1] + "/apply/" + id[2],
+                    type: "GET",
+                    success: function(data, status, xhr) {
+                        //console.log(data);
+                    },
+                    error: function(xhr, status, error) {
+                        console.log(xhr, status, error);
+                    }
+                });
+            }
+        }
+    });*/
 });
 
