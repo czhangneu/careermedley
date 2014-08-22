@@ -1,0 +1,62 @@
+{% extends "user.html" %}
+{% block top %}
+    <!--show the user's avatar-->
+    <div class="form_medium">
+        <img class=" img-thumbnail img-responsive top_down_spacing" src="{{user.avatar(140)}}">
+        <form class="form-vertical" method="POST" name="main_page">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+                {{ form.firstname(class="form-control", placeholder="Firstname") }}
+                {% for error in form.errors.firstname %}
+                    <span style="color: red;">[{{error}}]</span>
+                {% endfor %}
+            </div>
+            <div class="form-group">
+                {{ form.lastname(class="form-control", placeholder="Lastname") }}
+                    {% for error in form.errors.lastname %}
+                        <span style="color: red;">[{{error}}]</span>
+                {% endfor %}
+            </div>
+            <div class="form-group">
+                {{ form.city(class="form-control", placeholder="City") }}
+                    {% for error in form.errors.city %}
+                        <span style="color: red;">[{{error}}]</span>
+                {% endfor %}
+            </div>
+            <div class="form-group">
+                {{ form.state(class="form-control", placeholder="State") }}
+                    {% for error in form.errors.state %}
+                        <span style="color: red;">[{{error}}]</span>
+                {% endfor %}
+            </div>
+            <div class="form-group">
+                {{ form.country(class="form-control", placeholder="Country") }}
+                    {% for error in form.errors.country %}
+                        <span style="color: red;">[{{error}}]</span>
+                {% endfor %}
+            </div>
+            <div class="form-group">
+                {{ form.zipcode(class="form-control", placeholder="Zipcode") }}
+                    {% for error in form.errors.zipcode %}
+                        <span style="color: red;">[{{error}}]</span>
+                {% endfor %}
+            </div>
+            <div class="form-group">
+                {{ form.major(class="form-control", placeholder="Major") }}
+                    {% for error in form.errors.major %}
+                        <span style="color: red;">[{{error}}]</span>
+                {% endfor %}
+            </div>
+            <div class="form-group">
+                {{ form.degree(class="form-control", placeholder="Degree") }}
+                    {% for error in form.errors.degree %}
+                        <span style="color: red;">[{{error}}]</span>
+                {% endfor %}
+            </div>
+            <div class="top_down_spacing">
+                {{ form.submit(class="btn btn-primary") }}
+            </div>
+
+    </form>
+    </div>
+{% endblock %}

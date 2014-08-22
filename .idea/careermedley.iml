@@ -2,7 +2,11 @@
 <module type="PYTHON_MODULE" version="4">
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$" />
+<<<<<<< HEAD
     <orderEntry type="jdk" jdkName="Python 2.7.5 (/Library/Frameworks/Python.framework/Versions/2.7/bin/python2.7-32)" jdkType="Python SDK" />
+=======
+    <orderEntry type="jdk" jdkName="Python 2.7.5 virtualenv at ~/venv" jdkType="Python SDK" />
+>>>>>>> FETCH_HEAD
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>

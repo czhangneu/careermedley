@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block navbar %}
+    <div>
+        <div id="logo" class="left-side">
+            <img src="/static/images/careerMedley.png" class="image" >
+        </div>
+    </div>
+    <nav class="navbar navbar-inverse " role="navigation">
+        <div id="navbarCollapse" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="{{ url_for('user',nickname = user.nickname) }}">Home</a></li>
+                <li class="dropdown">
+                    <a data-toggle="dropdown" class="dropdown-toggle"
+                       href="#">Profile <b class="caret"></b></a>
+                    <ul role="menu" class="dropdown-menu">
+                        <li><a href="#">View/Edit Profile</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a data-toggle="dropdown" class="dropdown-toggle"
+                       href="#">Documents <b class="caret"></b></a>
+                    <ul role="menu" class="dropdown-menu">
+                        <li><a href="{{url_for('upload', nickname=user.nickname)}}">Upload a document</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a data-toggle="dropdown" class="dropdown-toggle"
+                       href="#">Applications <b class="caret"></b></a>
+                    <ul role="menu" class="dropdown-menu">
+                        <li><a href="{{url_for('list_applications', nickname=user.nickname) }}">Active applications</a></li>
+                        <li><a href="#">Past applications</a></li>
+                    </ul>
+                </li>
+                <li><a href="{{ url_for('bookmarked', nickname=user.nickname) }}">Saved Positions</a></li>
+                <li class="dropdown">
+                    <a data-toggle="dropdown" class="dropdown-toggle"
+                       href="#">Employers <b class="caret"></b></a>
+                    <ul role="menu" class="dropdown-menu">
+                        <li><a href="#">Employers search</a></li>
+                        <li><a href="{{ url_for('favorite_employers', nickname = user.nickname) }}">Favorite employers</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="{{ url_for('logout') }}">Sign Out</a></li>
+            </ul>
+            <div class="nav navbar-nav navbar-right user_color">
+                <a class="navbar-brand" id="user_color" href="#">Hi, {{user.nickname}}!</a>
+            </div>
+        </div>
+    </nav>
+{% endblock %}
+
+<!-- Modify bootstrap's body content with ours -->
+{% block top %}
+    <div class="row">
+        {% if positions %}
+            {% for position in positions %}
+                {% include 'job_marked_results.html' %}
+            {% endfor %}
+        {% endif %}
+    </div>
+{% endblock %}

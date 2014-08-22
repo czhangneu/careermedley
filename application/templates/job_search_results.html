@@ -1,0 +1,26 @@
+<div >
+    <a> {{job.jobtitle }}</a>
+    <div class="company_details">
+        <span>{{job.company}}  - </span>
+        <span>{{job.city}}, {{job.state}}</span>
+    </div>
+    <table class="table">
+        <tbody>
+            <tr class="active">
+                <td>
+                    <span>{{job.snippet|safe}}</span>
+                </td>
+                {% if current_user.is_authenticated() %}
+                    <td>
+                        <button type="button" id="save_{{user.nickname}}_{{job.jobkey}}"
+                                class="btn btn-primary save_button" >Save</button>
+                    </td>
+                    <td>
+                        <button type="button" id="apply_{{user.nickname}}_{{job.jobkey}}"
+                                class="btn btn-success apply_button" >Apply</button>
+                    </td>
+                {% endif %}
+            </tr>
+        </tbody>
+    </table>
+</div>

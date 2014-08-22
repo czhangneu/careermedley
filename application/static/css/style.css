@@ -1,0 +1,53 @@
+
+.center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+}
+
+.align-left {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 70%;
+}
+
+.left-side {
+    display: block;
+    width: 20%;
+}
+#open_id {
+    margin:2px;
+}
+#user_color {
+    color: Yellow;
+    font-size: 150%;
+}
+.image {
+    max-width: 100%;
+    width: 100%;
+}
+
+#logo {
+    padding: 2em 0 2em;
+}
+
+.form_small {
+    width: 20%;
+}
+
+.form_medium {
+    width: 40%;
+}
+
+.form_large {
+    width: 70%;
+}
+
+.top_down_spacing {
+    margin:3% 0 3% 0 ;
+}
+
+.doc_form_elem {
+}

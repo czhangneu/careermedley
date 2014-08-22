@@ -1,0 +1,26 @@
+<div>
+    <a href="{{ position.url }}" target="_blank"> {{position.jobtitle }}</a>
+    <div class="company_details">
+        <span>{{position.company}}  - </span>
+        <span>{{position.city}}, {{position.state}}</span>
+    </div>
+    <table class="table">
+        <tbody>
+            <tr class="active">
+                <td>
+                    <span>{{position.snippet|safe}}</span>
+                </td>
+                {% if current_user.is_authenticated() %}
+                    <td>
+                        <button type="button" id="delete_{{user.nickname}}_{{position.jobkey}}"
+                                class="btn btn-primary delete_button" >Delete</button>
+                    </td>
+                    <td>
+                        <button type="button" id="apply_{{user.nickname}}_{{position.jobkey}}"
+                                class="btn btn-success apply_button" >Apply</button>
+                    </td>
+                {% endif %}
+            </tr>
+        </tbody>
+    </table>
+</div>
