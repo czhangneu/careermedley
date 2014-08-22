@@ -82,9 +82,6 @@
             </div>
             <div class="form-group input-group">
                 {{ form.resume_version(class="form-control doc_form_elem", placeholder="Resume") }}
-                {% for error in form.errors.resume_version %}
-                    <span style="color: red;">[{{error}}]</span>
-                {% endfor %}
                 {% if documents %}
                     {% include 'job_documents.html' %}
                 {% else %}
@@ -93,9 +90,6 @@
             </div>
             <div class="form-group input-group">
                 {{ form.cv_version(class="form-control doc_form_elem", placeholder="CV") }}
-                {% for error in form.errors.resume_version %}
-                    <span style="color: red;">[{{error}}]</span>
-                {% endfor %}
                 {% if documents %}
                     {% include 'job_documents.html' %}
                 {% else %}

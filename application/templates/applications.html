@@ -2,13 +2,23 @@
     <a href="{{ position.url }}" target="_blank"> {{position.jobtitle }}</a>
     <div class="company_details">
         <span>{{position.company}}  - </span>
-        <span>{{position.city}}, {{position.state}} <b>Post Date: </b> {{position.date}}</span>
+        <span>{{position.city}}, {{position.state}} <b>Post Date: </b> {{position.post_date}}</span>
     </div>
     <table class="table">
         <tbody>
             <tr class="active">
                 <td>
                     <span>{{position.snippet|safe}}</span>
+                </td>
+            </tr>
+            <tr class="active">
+                <td>
+                    <span>Resume used: {{position.resume}}</span>
+                </td>
+            </tr>
+            <tr class="active">
+                <td>
+                    <span>CV used: {{position.cv}}</span>
                 </td>
             </tr>
         </tbody>

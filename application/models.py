@@ -96,6 +96,7 @@ class Position(db.Model):
 
     def unmark_position(self, account):
         if self.is_marked_by_account_owner(account):
+            print "account exists, try to remove"
             self.user_accounts.remove(account)
             return self
 
@@ -112,7 +113,7 @@ class Application(db.Model):
     user = db.relationship('User', backref=db.backref('applications', lazy='dynamic'))
     position = db.relationship('Position', backref=db.backref('applications', lazy='dynamic'))
 
-    def __init__(self, id, jobkey, apply_date, resume, cv):
+    def __init__(self, id, jobkey, apply_date, resume=None, cv=None):
         self.id = id
         self.jobkey = jobkey
         self.apply_date = apply_date
@@ -120,7 +121,8 @@ class Application(db.Model):
         self.cv = cv
 
     def __repr__(self):
-        return '<Application %r>' % self.accountid
+        return '<Application details: id: %r, jobkey: %r, apply date: %r, resume: %r>' % \
+               (self.id, self.jobkey, self.apply_date, self.resume)
 
 class Document(db.Model):
     id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)

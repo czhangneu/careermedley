@@ -116,6 +116,10 @@ def delete(nickname, jobkey):
         account = Account.query.filter_by(id=g.user.id).first()
         position.unmark_position(account)
         db.session.add(position)
+        application = Application.query.filter_by(id=g.user.id, jobkey=position.jobkey).first()
+        if application is not None:
+            db.session.add(application)
+            db.session.delete(application)
         db.session.delete(position)
         db.session.commit()
     return redirect(url_for('bookmarked', nickname=nickname))
@@ -130,11 +134,25 @@ def delete(nickname, jobkey):
 def bookmarked(nickname):
     account = Account.query.filter_by(id=g.user.id).first()
     marked_positions = account.get_all_marked_positions()
-    print "-----marked positions for Account: ", marked_positions
 
     return render_template('marked_jobs.html',
                            user=g.user,
                            positions=marked_positions)
+
+def insert_into_position_table(job_data):
+    position = None
+    if job_data is not None:
+        dt = datetime.strptime(job_data['date'], "%a, %d %b %Y %H:%M:%S %Z" )
+        print(" time object is: %s" % dt)
+        position = Position(jobkey=job_data['jobkey'], company=job_data['company'],
+                            jobtitle=job_data['jobtitle'], city=job_data['city'],
+                            state=job_data['state'], snippet=job_data['snippet'],
+                            post_date=dt, url=job_data['url'],
+                            expired=job_data['expired'])
+        print "new position, adding to database: %s", position
+        db.session.add(position)
+        db.session.commit()
+    return position
 
 # *****************************************************************
 # Page: /user/<nickname>/<jobkey>
@@ -153,16 +171,8 @@ def save_job(nickname, jobkey):
 
     position = Position.query.filter_by(jobkey=job_data['jobkey']).first()
     if position is None:
-        dt = datetime.strptime(job_data['date'], "%a, %d %b %Y %H:%M:%S %Z" )
-        print(" time object is: %s" % dt)
-        position = Position(jobkey=job_data['jobkey'], company=job_data['company'],
-                            jobtitle=job_data['jobtitle'], city=job_data['city'],
-                            state=job_data['state'], snippet=job_data['snippet'],
-                            post_date=dt, url=job_data['url'],
-                            expired=job_data['expired'])
-        print "new position, adding to database: %s", position
-        db.session.add(position)
-        db.session.commit()
+
+        position = insert_into_position_table(job_data)
 
         # insert into marked position table
         account = Account.query.filter_by(id=g.user.id).first()
@@ -198,31 +208,41 @@ def save_applications(nickname, jobkey):
     print "====== got into save_applications jobkey: ", jobkey
     set_upload_dir(nickname)
     form = ApplicationForm()
-    job_data = []
-    #check if the jobkey exists in the Position table
+
+    # get the job data from the database or server
     job_data = Position.query.filter_by(jobkey=jobkey).first();
     if job_data is None:
         getJob = ProcessJobSearch()
         job = getJob.search_by_jobkeys(jobkey)
         job_data = job[0]
         print "title: %s, jobkey: %s, company: %s" % (job_data['jobtitle'],
-                                                  job_data['jobkey'], job_data['company'])
+                                                      job_data['jobkey'], job_data['company'])
     if request.method == 'POST' and form.validate_on_submit():
+        position =  Position.query.filter_by(jobkey=jobkey).first();
+        if position is None:
+            print " ---- inserting into position table ----"
+            position = insert_into_position_table(job_data)
         apply_date = form.apply_date.data
+        dt = datetime.strptime(apply_date, "%m/%d/%Y" )
         resume = form.resume_version.data
         cv = form.cv_version.data
         username = form.username_on_website.data
         password = form.password_on_website.data
+
+        #insert into Application table
         user = User.query.filter_by(nickname=nickname).first()
-        position = Position.query.filter_by(jobkey=jobkey).first()
-        if user is not None and position is not None:
-            application = Application(id=user.id, jobkey=position.jobkey,
-                                      apply_date=apply_date, resume=resume, cv=cv)
-            db.session.add(application)
-            db.session.commit()
-        else :
-            flash(" We couldn't save the position.")
-        return redirect(url_for('application_list', nickname=nickname))
+        if user is not None:
+            application = Application.query.filter_by(id=user.id, jobkey=position.jobkey).first()
+            if application is None:
+
+                print("commit to application table")
+                application = Application(id=user.id, jobkey=position.jobkey,
+                                          apply_date=dt, resume=resume, cv=cv)
+                db.session.add(application)
+                db.session.commit()
+        else:
+            print(" We couldn't save the position.")
+        return redirect(url_for('list_applications', nickname=nickname))
 
     print "documents available: ", os.listdir(g.user.upload_dir), " path is: ", g.user.upload_dir
     documents = os.listdir(g.user.upload_dir)
@@ -244,10 +264,9 @@ def save_applications(nickname, jobkey):
 def list_applications(nickname):
     user = User.query.filter_by(nickname=nickname).first()
     applications = Application.query.filter_by(id=user.id).all()
-    print " applications: ", applications
     positions = []
     for application in applications:
-        positions.append(Position.query.filter_by(jobkey=application.jobkey).first())
+        positions.append(Position.query.filter_by(jobkey=application.jobkey).first() )
     return render_template('list_applications.html', user=g.user,
                            positions=positions)
 

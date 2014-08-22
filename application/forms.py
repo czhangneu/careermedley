@@ -27,8 +27,8 @@ class ProfileForm(Form):
 
 class ApplicationForm(Form):
     apply_date = StringField('Apply Date', [InputRequired()])
-    resume_version = StringField('Resume', [InputRequired()])
-    cv_version = StringField('CV', [InputRequired()])
+    resume_version = StringField('Resume')
+    cv_version = StringField('CV')
     username_on_website = StringField('Username', [InputRequired()])
     password_on_website = StringField('Password', [InputRequired()])
     submit = SubmitField('Submit')
